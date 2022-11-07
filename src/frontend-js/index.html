@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
+
+    <script>
+        function Update() {
+            //fetch(`http://192.168.1.9/projects/locate/`)
+            fetch(`demo.json`)
+                .then(response => response.json())
+                .then(data => addGroupedProjects(data))
+        }
+
+        function addGroupedProjects(groupedProjects) {
+            Object.entries(groupedProjects).forEach(x => addGroup(x[0], x[1]));
+        }
+
+        function addGroup(groupPath, projects) {
+            const container = document.getElementById("project-list");
+            const heading = document.createElement("h1");
+            heading.classList.add("mt-5");
+            heading.innerText = groupPath;
+            container.appendChild(heading);
+            const projectDivs = projects.map(project => getProjectDiv(project));
+            projectDivs.forEach(x => container.appendChild(x));
+        }
+
+        function makeElement(innerHTML = "", type = "div") {
+            const div = document.createElement(type);
+            div.innerHTML = innerHTML;
+            return div;
+        }
+
+        function getProjectDiv(project) {
+            const path = project["path"];
+            const title = project["title"];
+            const description = project["description"];
+
+            const divTitle = makeElement(title);
+            divTitle.classList.add("fw-bold");
+            
+            const divPath = makeElement(`<code>${path}</code>`);
+
+            const divDescription = makeElement(description);
+
+            const div = makeElement();
+            div.classList.add("border");
+            div.classList.add("rounded");
+            div.classList.add("bg-light");
+            div.classList.add("my-3");
+            div.classList.add("p-2");
+            div.appendChild(divTitle);
+            div.appendChild(divDescription);
+            div.appendChild(divPath);
+            return div;
+        }
+
+    </script>
+</head>
+
+<body>
+
+    <div class="container" id="project-list">
+
+    </div>
+
+    <script>Update();</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
